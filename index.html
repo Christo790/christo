@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Live Chat</title>
+    <style>
+      /* Add your custom styles here */
+    </style>
+  </head>
+  <body>
+    <div id="chat">
+      <textarea id="chatlog" readonly></textarea>
+      <input type="text" id="messageInput" placeholder="Type your message..." />
+      <button id="sendButton">Send</button>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script>
+      // Initialize Firebase with your project credentials
+      const firebaseConfig = {
+        apiKey: 'AIzaSyAWfpHMh1EKdYuIoMoGccOc72h16qaF70k',
+        authDomain: 'chat-38784.firebaseapp.com',
+        databaseURL: 'https://chat-38784.firebaseio.com',
+        projectId: 'chat-38784',
+      };
+      firebase.initializeApp(firebaseConfig);
+
+      const chatLog = document.getElementById('chatlog');
+      const messageInput = document.getElementById('messageInput');
+      const sendButton = document.getElementById('sendButton');
+
+      // Get a reference to the chat messages in the Firebase database
+      const chatRef = firebase.database().ref('chat');
+
+      // Listen for new chat messages
+      chatRef.on('child_added', (snapshot) => {
+        const message = snapshot.val();
+        chatLog.value += message + '\n';
+      });
+
+      // Send message to the Firebase database
+      sendButton.addEventListener('click', () => {
+        const message = messageInput.value;
+        chatRef.push(message);
+        messageInput.value = '';
+      });
+    </script>
+  </body>
+</html>
